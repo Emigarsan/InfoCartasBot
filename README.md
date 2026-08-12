@@ -10,10 +10,12 @@ A Telegram **inline bot** that lets Marvel Champions LCG players search [MarvelC
 
 ## Demo
 
-<!-- Replace with a real screenshot/GIF at docs/demo.png (inline query dropdown + a card result). -->
 <p align="center">
-  <img src="docs/demo.png" alt="InfoCartasBot inline search demo" width="480">
+  <img src="docs/demo-search.png" alt="Inline search dropdown for @InfoCartas_bot" width="45%">
+  &nbsp;&nbsp;
+  <img src="docs/demo-result.png" alt="Card sent by InfoCartasBot in a chat" width="45%">
 </p>
+<p align="center"><em>Inline search → card result, watermarked and sent straight into the chat.</em></p>
 
 ## Table of contents
 

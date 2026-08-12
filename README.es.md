@@ -10,10 +10,12 @@ Bot de Telegram en modo **inline** que permite a jugadores de Marvel Champions L
 
 ## Demo
 
-<!-- Sustituye por una captura/GIF real en docs/demo.png (desplegable de búsqueda inline + resultado de una carta). -->
 <p align="center">
-  <img src="docs/demo.png" alt="Demo de búsqueda inline de InfoCartasBot" width="480">
+  <img src="docs/demo-search.png" alt="Desplegable de búsqueda inline de @InfoCartas_bot" width="45%">
+  &nbsp;&nbsp;
+  <img src="docs/demo-result.png" alt="Carta enviada por InfoCartasBot en un chat" width="45%">
 </p>
+<p align="center"><em>Búsqueda inline → resultado de la carta, con marca de agua, enviada directamente al chat.</em></p>
 
 ## Índice
 

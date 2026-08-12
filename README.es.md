@@ -6,7 +6,7 @@
 
 Bot de Telegram en modo **inline** que permite a jugadores de Marvel Champions LCG buscar cartas de [MarvelCDB](https://marvelcdb.com/) en español, directamente desde cualquier chat. No hace falta añadir el bot a un grupo — basta con escribir `@InfoCartas_bot <nombre de carta>` en cualquier conversación, grupo o privado, y elegir la carta del desplegable.
 
-🇬🇧 English version: [README.md](README.md)
+[![Read in English](https://img.shields.io/badge/🇬🇧_read_in-English-red?style=for-the-badge)](README.md)
 
 ## Demo
 

@@ -15,12 +15,9 @@ env/
 
 # Logs y PIDs
 *.log
-deploy/logs/
-deploy/pids/
 
 # Backups
 backups/
-deploy/backups/
 
 # Datos/config locales, no parte del codigo fuente del portfolio
 bot/admin_ids.txt

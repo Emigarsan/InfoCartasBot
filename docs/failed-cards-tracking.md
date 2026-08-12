@@ -1,7 +1,7 @@
-# Sistema de Tracking de Tarjetas Fallidas
+# Sistema de Tracking de cartas Fallidas
 
 ## Descripción
-El archivo `bot/data/failed_cards.json` registra automáticamente las tarjetas que fallan durante el proceso de marca de agua. Esto evita que se reintente procesar tarjetas que siempre fallan (por ejemplo, imágenes corruptas, servidores caídos, etc).
+El archivo `bot/data/failed_cards.json` registra automáticamente las cartas que fallan durante el proceso de marca de agua. Esto evita que se reintente procesar cartas que siempre fallan (por ejemplo, imágenes corruptas, servidores caídos, etc).
 
 ## Funcionamiento
 
@@ -27,7 +27,7 @@ Cuando `marca_agua_v2.py` falla al procesar una tarjeta, guarda:
 
 ### Cómo funciona en la ejecución
 1. **Carga inicial**: El script carga `failed_cards.json` al iniciar
-2. **Filtrado**: Excluye tarjetas fallidas de la lista a procesar
+2. **Filtrado**: Excluye cartas fallidas de la lista a procesar
 3. **Salto silencioso**: Muestra un icono `⏭️` cuando salta una tarjeta conocida
 4. **Registro de nuevos fallos**: Si una tarjeta falla nuevamente, se actualiza el timestamp
 
@@ -57,9 +57,9 @@ del bot\data\failed_cards.json
 import os
 os.remove("bot/data/failed_cards.json")
 ```
-Luego ejecuta `marca_agua_v2.py` y reintentará todas las tarjetas.
+Luego ejecuta `marca_agua_v2.py` y reintentará todas las cartas.
 
-### Para revisar qué tarjetas están fallando
+### Para revisar qué cartas están fallando
 ```bash
 # Desde PowerShell
 Get-Content bot/data/failed_cards.json | convertfrom-json | keys
@@ -75,27 +75,27 @@ Get-Content bot/data/failed_cards.json | convertfrom-json | keys
 | `Guardar: [PermissionError]` | Carpeta sin permisos | Verifica permisos de `imagenes_con_marca/` |
 | `Procesamiento: [error]` | Error en marca de agua (Pillow) | Podría ser imagen corrupta en CDN |
 
-## Interacción con el Orquestador
+## Interacción con la actualización en caliente
 
-El archivo `deploy/run_local_sftp_update.py` respeta `failed_cards.json`:
+`bot/live_update/soft_updater.py` (disparado por `/actualizar`) respeta `failed_cards.json`:
 - No modifica el archivo de fallos
-- Simplemente permite que `marca_agua_v2.py` lo gestione
-- Si deseas limpiar fallos antes de una actualización completa, hazlo manualmente antes de ejecutar el orquestador
+- Simplemente permite que `marca_agua_v2.py` lo gestione durante el paso de regeneración de imágenes
+- Si deseas limpiar fallos antes de una actualización completa, hazlo manualmente antes de ejecutar `/actualizar`
 
 ## Ejemplo Completo
 
 ```bash
-# 1. Ejecutar actualización normal
-python deploy/run_local_sftp_update.py
+# 1. Ejecutar marca_agua_v2.py directamente (o via /actualizar en el bot)
+cd bot/data && python marca_agua_v2.py
 # Salida: "⏭️  Cartas saltadas por fallos previos: 8"
 
-# 2. Revisar qué tarjetas fallaron
-cat bot/data/failed_cards.json
+# 2. Revisar qué cartas fallaron
+cat failed_cards.json
 
 # 3. Decidir si reintentar una específica
 # Editar failed_cards.json y eliminar esa entrada
 
 # 4. Ejecutar de nuevo
-python deploy/run_local_sftp_update.py
+python marca_agua_v2.py
 ```
 

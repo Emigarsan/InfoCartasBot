@@ -54,12 +54,9 @@ Both paths are gitignored in this repo (`/pipeline/marvelsdb-json-data/`, `/frea
 
 Both `MARVELCDB_REPO_DIR` and `TRANSLATION_REPO_DIR` env vars (see `.env.example`) let you point `pipeline/json_traducido.py` at repo clones in a different location; by default it looks for them as siblings, per the layout above.
 
-## Two ways to trigger an update
+## Triggering an update
 
-The project supports two independent workflows for pulling upstream changes and regenerating `bot/data/marvelcdb_spanish.json`:
-
-1. **In-bot hot update** (`bot/live_update/soft_updater.py`) — triggered by the `/actualizar` Telegram admin command. Runs `git pull` on the two external repos directly on the server, re-runs the pipeline, regenerates watermarked images, and reloads the new data into the running bot process without a restart.
-2. **Local SFTP deploy** (`deploy/run_local_sftp_update.py`) — an alternative, local-first workflow: syncs from locally-cloned copies of the two external repos (via `MARVEL_LOCAL_REPO_PATH` / `FREAKMOD_LOCAL_REPO_PATH`), runs the same pipeline, and uploads only the changed output files to the host over SFTP. Useful for testing pipeline changes before they touch the live server.
+Updates are pulled with an **in-bot hot update** (`bot/live_update/soft_updater.py`), triggered by the `/actualizar` Telegram admin command: it runs `git pull` on the two external repos directly on the server, re-runs the pipeline, regenerates watermarked images, and reloads the new data into the running bot process without a restart.
 
 ## Image watermarking and caching
 

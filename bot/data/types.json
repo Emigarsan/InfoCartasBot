@@ -1,0 +1,82 @@
+[
+	{
+		"code": "ally",
+		"name": "Aliado"
+	},
+	{
+		"code": "alter_ego",
+		"name": "Alter ego"
+	},
+	{
+		"code": "attachment",
+		"name": "Accesorio"
+	},
+	{
+		"code": "environment",
+		"name": "Entorno"
+	},
+	{
+		"code": "event",
+		"name": "Evento"
+	},
+	{
+		"code": "hero",
+		"name": "Héroe"
+	},
+	{
+		"code": "main_scheme",
+		"name": "Plan principal"
+	},
+	{
+		"code": "minion",
+		"name": "Esbirro"
+	},
+	{
+		"code": "obligation",
+		"name": "Obligación"
+	},
+	{
+		"code": "resource",
+		"name": "Recurso"
+	},
+	{
+		"code": "side_scheme",
+		"name": "Plan secundario"
+	},
+	{
+		"code": "support",
+		"name": "Apoyo"
+	},
+	{
+		"code": "treachery",
+		"name": "Perfidia"
+	},
+	{
+		"code": "upgrade",
+		"name": "Mejora"
+	},
+	{
+		"code": "villain",
+		"name": "Villano"
+	},
+	{
+		"code": "player_side_scheme",
+		"name": "Plan secundario de jugador"
+	},
+	{
+		"code": "evidence_means",
+		"name": "Prueba - Medio"
+	},
+	{
+		"code": "evidence_motive",
+		"name": "Prueba - Motivo"
+	},
+	{
+		"code": "evidence_opportunity",
+		"name": "Prueba - Oportunidad"
+	},
+	{
+		"code": "leader",
+		"name": "Líder"
+	}
+]

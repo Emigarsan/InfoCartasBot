@@ -1,0 +1,34 @@
+# Entorno virtual y dependencias
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Variables de entorno
+.env
+*.env
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Logs y PIDs
+*.log
+deploy/logs/
+deploy/pids/
+
+# Backups
+backups/
+deploy/backups/
+
+# Datos/config locales, no parte del codigo fuente del portfolio
+bot/admin_ids.txt
+bot/data/failed_cards.json
+pipeline/updated_json/
+pipeline/marvelcdb_spanish.json
+
+# Repos externos de los que depende el proyecto (ver ARCHITECTURE.md),
+# clonados aparte por quien despliega o ejecuta el pipeline
+/freakmod/
+/pipeline/marvelsdb-json-data/

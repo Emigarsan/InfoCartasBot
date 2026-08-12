@@ -1,0 +1,6 @@
+# IDs de administradores de Telegram (uno por linea o separados por coma).
+# Copia este archivo como admin_ids.txt (gitignored) y rellena tus IDs reales,
+# o usa la variable de entorno BOT_ADMIN_IDS en su lugar.
+# Ejemplos:
+# 123456789
+# 123456789,987654321

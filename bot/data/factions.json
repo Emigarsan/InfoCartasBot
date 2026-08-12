@@ -1,0 +1,38 @@
+[
+	{
+		"code": "aggression",
+		"name": "Agresividad"
+	},
+	{
+		"code": "basic",
+		"name": "Básica"
+	},
+	{
+		"code": "campaign",
+		"name": "Campaña"
+	},
+	{
+		"code": "encounter",
+		"name": "Encuentro"
+	},
+	{
+		"code": "hero",
+		"name": "Héroe"
+	},
+	{
+		"code": "justice",
+		"name": "Justicia"
+	},
+	{
+		"code": "leadership",
+		"name": "Liderazgo"
+	},
+	{
+		"code": "protection",
+		"name": "Protección"
+	},
+	{
+		"code": "pool",
+		"name": "Masacrismo"
+	}
+]

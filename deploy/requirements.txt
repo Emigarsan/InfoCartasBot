@@ -1,0 +1,2 @@
+# Install together with the root requirements.txt (needs python-dotenv from there).
+paramiko>=3.4.0

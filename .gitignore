@@ -15,6 +15,7 @@ env/
 
 # Logs y PIDs
 *.log
+bot/logs/
 
 # Backups
 backups/

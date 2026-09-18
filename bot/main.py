@@ -9,6 +9,7 @@ import unicodedata
 import os
 from pathlib import Path
 from threading import Lock
+from queue import Empty, Queue
 from dotenv import load_dotenv
 from rapidfuzz import process, fuzz
 from telegram import Update, Message, InlineQueryResultPhoto, InputTextMessageContent, InlineQueryResultCachedPhoto, InlineQueryResultArticle
@@ -20,6 +21,9 @@ from live_update.soft_updater import run_soft_update, check_soft_update
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR.parent / ".env")
 ADMIN_IDS_FILE = BASE_DIR / "admin_ids.txt"
+BACKUP_DIR = BASE_DIR / "backups"
+LOGS_DIR = BASE_DIR / "logs"
+BACKUP_KEEP = os.getenv("BOT_UPDATE_BACKUP_KEEP", "4")
 
 
 def cargar_admin_ids() -> set[int]:
@@ -183,8 +187,9 @@ async def ayuda(update: Update, context: CallbackContext):
 - */ayuda* - Muestra esta ayuda.
 - */mi_id* - Muestra tu ID de Telegram.
 - */actualizar* - (Admin) Actualiza datos desde GitHub y recarga en memoria sin reiniciar.
+- */actualizar force* - (Admin) Fuerza la actualización completa aunque no haya cambios remotos.
 - */check_update* - (Admin) Comprueba si hay cambios remotos sin aplicar actualización.
-- */estado_update* - (Admin) Estado de la actualización en caliente.'''
+- */estado_update* - (Admin) Estado de la actualización en caliente, backups y logs.'''
     msg = await update.message.reply_text(mensaje, parse_mode="Markdown", )
     asyncio.create_task(auto_delete_message(msg, 60))
     await update.message.delete()
@@ -214,11 +219,42 @@ async def actualizar_servidor(update: Update, context: CallbackContext) -> None:
         await update.message.delete()
         return
 
-    status_msg = await update.message.reply_text("Iniciando actualización en caliente...", )
+    force_update = bool(context.args and context.args[0].strip().lower() in {"force", "forzar", "--force", "-f"})
+    inicio = "Iniciando actualización forzada en caliente..." if force_update else "Iniciando actualización en caliente..."
+    status_msg = await update.message.reply_text(inicio, )
     try:
-        result = await asyncio.to_thread(run_soft_update, BASE_DIR)
+        progress_queue: Queue = Queue()
+
+        def on_progress(event: dict) -> None:
+            progress_queue.put(event)
+
+        update_task = asyncio.create_task(asyncio.to_thread(run_soft_update, BASE_DIR, force_update, on_progress))
+        ultimo_render = inicio
+
+        while not update_task.done():
+            ultimo_evento = None
+            while True:
+                try:
+                    ultimo_evento = progress_queue.get_nowait()
+                except Empty:
+                    break
+
+            if ultimo_evento:
+                detalle = ultimo_evento.get("detail", "")
+                texto = f"Actualización en curso: {ultimo_evento.get('percent', 0)}%\nPaso: {ultimo_evento.get('step', 'desconocido')}"
+                if detalle:
+                    texto += f"\nDetalle: {detalle}"
+                if texto != ultimo_render:
+                    await status_msg.edit_text(texto)
+                    ultimo_render = texto
+
+            await asyncio.sleep(1.2)
+
+        result = await update_task
         if result["status"] == "error":
             texto = "Error durante la actualización:\n" + "\n".join(result["messages"][-5:])
+            if result.get("logs_dir"):
+                texto += f"\n\nLogs: {result['logs_dir']}"
             await status_msg.edit_text(texto)
             return
 
@@ -230,9 +266,14 @@ async def actualizar_servidor(update: Update, context: CallbackContext) -> None:
             ]
             if result["messages"]:
                 resumen.append("Ultimo detalle: " + result["messages"][-1])
+                backups = [m for m in result["messages"] if m.startswith("Backup completo guardado en ")]
+                if backups:
+                    resumen.append(backups[-1])
+            if result.get("logs_dir"):
+                resumen.append(f"Logs: {result['logs_dir']}")
             await status_msg.edit_text("\n".join(resumen))
         else:
-            await status_msg.edit_text("No se detectaron cambios en los repositorios. No se recargaron datos.")
+            await status_msg.edit_text("No se detectaron cambios en los repositorios. No se recargaron datos. Usa /actualizar force para forzar ejecución.")
     except Exception as e:
         logging.exception("Fallo en actualización en caliente")
         await status_msg.edit_text(f"Error inesperado al actualizar: {e}")
@@ -255,6 +296,9 @@ async def estado_actualizacion(update: Update, context: CallbackContext) -> None
         f"- Proceso: {estado_lock}\n"
         f"- Admin IDs cargados: {len(BOT_ADMIN_IDS)}\n"
         f"- Archivo admins: {ADMIN_IDS_FILE}\n"
+        f"- Backups: {BACKUP_DIR}\n"
+        f"- Retención backups: {BACKUP_KEEP}\n"
+        f"- Logs updates: {LOGS_DIR}\n"
         f"- Base dir: {BASE_DIR}"
     )
     msg = await update.message.reply_text(mensaje, )

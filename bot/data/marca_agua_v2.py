@@ -140,10 +140,12 @@ def obtener_imagen(codigo_carta, tipo):
             imagen_data = agregar_marca_agua(imagen_data, marca_agua_path, tipo)
             cache_imagenes[codigo_carta] = imagen_data
             return imagen_data
-        else:
-            error_msg = f"HTTP {response.status_code}"
-            registrar_fallo_tarjeta(codigo_carta, error_msg, TARJETAS_FALLIDAS)
-            raise Exception(f"Error al obtener imagen: {response.status_code}")
+        if response.status_code == 404:
+            print(f"Imagen aun no publicada para {codigo_carta}, se reintentara en la proxima actualizacion", flush=True)
+            return None
+        error_msg = f"HTTP {response.status_code}"
+        registrar_fallo_tarjeta(codigo_carta, error_msg, TARJETAS_FALLIDAS)
+        raise Exception(f"Error al obtener imagen: {response.status_code}")
     except requests.RequestException as e:
         error_msg = f"Red: {str(e)}"
         registrar_fallo_tarjeta(codigo_carta, error_msg, TARJETAS_FALLIDAS)
@@ -166,6 +168,9 @@ def procesar_carta(codigo, tipo):
         error_msg = "Carta no encontrada en base de datos"
         registrar_fallo_tarjeta(codigo, error_msg, TARJETAS_FALLIDAS)
         print(f"No se encontró información para la carta {codigo}", flush=True)
+        return
+
+    if "duplicate_of" in info:
         return
 
     inicio = time.perf_counter()
